@@ -6,16 +6,16 @@
  * signed in as Rodoviario Goias, the isolation guarantee is broken and that is a
  * stop-everything bug.
  */
-import { forOrg } from "./tenant.js";
-import { unsafeDb } from "./unsafe.js";
-import * as schema from "./schema.js";
+import { forOrg } from "./tenant";
+import { unsafeDb } from "./unsafe";
+import * as schema from "./schema";
 
-const [orgA] = await unsafeDb
+const [orgA] = await unsafeDb()
   .insert(schema.organizations)
   .values({ name: "Rodoviario Goias LTDA", cnpj: "11222333000181", antNumber: "12345678" })
   .returning();
 
-const [orgB] = await unsafeDb
+const [orgB] = await unsafeDb()
   .insert(schema.organizations)
   .values({ name: "Transportes Bandeirante ME", cnpj: "44555666000199", antNumber: "87654321" })
   .returning();

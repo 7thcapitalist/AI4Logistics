@@ -1,5 +1,5 @@
-export * as schema from "./schema.js";
-export { forOrg, MissingPredicateError, type OrgDb, type TenantTable } from "./tenant.js";
+export * as schema from "./schema";
+export { forOrg, MissingPredicateError, type OrgDb, type TenantTable } from "./tenant";
 
 /**
  * Note the absence of a raw-client export. That is deliberate.

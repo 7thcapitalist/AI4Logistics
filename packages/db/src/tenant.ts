@@ -12,7 +12,7 @@
  */
 import { and, eq, type SQL } from "drizzle-orm";
 import type { SQLiteTable } from "drizzle-orm/sqlite-core";
-import { unsafeDb } from "./unsafe.js";
+import { unsafeDb } from "./unsafe";
 
 /** A table that carries org_id. The isolation test proves the set is complete. */
 export type TenantTable = SQLiteTable & { orgId: SQLiteTable["_"]["columns"][string] };
@@ -42,11 +42,11 @@ export function forOrg(orgId: number) {
 
     /** SELECT * FROM table WHERE org_id = ? AND <where> */
     findMany<T extends TenantTable>(table: T, where?: SQL) {
-      return unsafeDb.select().from(table as SQLiteTable).where(scope(table, where));
+      return unsafeDb().select().from(table as SQLiteTable).where(scope(table, where));
     },
 
     async findOne<T extends TenantTable>(table: T, where: SQL) {
-      const rows = await unsafeDb
+      const rows = await unsafeDb()
         .select()
         .from(table as SQLiteTable)
         .where(scope(table, where))
@@ -56,7 +56,7 @@ export function forOrg(orgId: number) {
 
     /** org_id is stamped here and overwrites anything the caller passed. */
     insert<T extends TenantTable>(table: T, values: Record<string, unknown>) {
-      return unsafeDb
+      return unsafeDb()
         .insert(table as SQLiteTable)
         .values({ ...values, orgId } as never)
         .returning();
@@ -64,7 +64,7 @@ export function forOrg(orgId: number) {
 
     insertMany<T extends TenantTable>(table: T, rows: Record<string, unknown>[]) {
       if (rows.length === 0) return Promise.resolve([]);
-      return unsafeDb
+      return unsafeDb()
         .insert(table as SQLiteTable)
         .values(rows.map((r) => ({ ...r, orgId })) as never)
         .returning();
@@ -74,7 +74,7 @@ export function forOrg(orgId: number) {
       if (!where) throw new MissingPredicateError("update");
       // org_id is never updatable: moving a row between carriers is not an operation.
       const { orgId: _ignored, ...rest } = set as { orgId?: unknown };
-      return unsafeDb
+      return unsafeDb()
         .update(table as SQLiteTable)
         .set(rest as never)
         .where(scope(table, where))
@@ -83,7 +83,7 @@ export function forOrg(orgId: number) {
 
     delete<T extends TenantTable>(table: T, where: SQL) {
       if (!where) throw new MissingPredicateError("delete");
-      return unsafeDb.delete(table as SQLiteTable).where(scope(table, where)).returning();
+      return unsafeDb().delete(table as SQLiteTable).where(scope(table, where)).returning();
     },
   };
 }

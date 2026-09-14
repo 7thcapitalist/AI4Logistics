@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { calculateSettlement } from "./settlement.js";
-import { formatBRL } from "./money.js";
+import { calculateSettlement } from "./settlement";
+import { formatBRL } from "./money";
 
 describe("calculateSettlement", () => {
   it("subtracts every cost kind from the freight", () => {

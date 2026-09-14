@@ -1,6 +1,6 @@
 import { migrate } from "drizzle-orm/libsql/migrator";
-import { unsafeDb } from "./unsafe.js";
+import { unsafeDb } from "./unsafe";
 
-await migrate(unsafeDb, { migrationsFolder: "./drizzle" });
+await migrate(unsafeDb(), { migrationsFolder: "./drizzle" });
 console.log("migrations applied");
 process.exit(0);
