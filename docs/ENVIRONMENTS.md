@@ -9,9 +9,9 @@ touched by code that is already on `main`.**
 
 | Vercel environment | Deployed from | Turso database | URL |
 |---|---|---|---|
-| **Production** | `main` only | `ai4l-prod` | the real domain |
-| **Preview** | every other branch, one per PR | `ai4l-preview` | a per-deployment URL |
-| **Development** | nothing; runs on your laptop | `ai4l-dev` | `localhost:3000` |
+| **Production** | `main` only | `ai4logistics-prod` | the real domain |
+| **Preview** | every other branch, one per PR | `ai4logistics-preview` | a per-deployment URL |
+| **Development** | nothing; runs on your laptop | `ai4logistics-dev` | `localhost:3000` |
 
 Vercel builds a Preview deployment for every push to a non-production branch, and
 a Production deployment for every push to `main`. You do not configure that, it is
@@ -29,13 +29,35 @@ fewer thing to set up, at the cost of occasionally stepping on each other's sche
 If that starts hurting, split it per person. Turso Free allows 100 databases, so
 the only cost is setup.
 
+### Region, and why it is currently wrong
+
+Turso Free allows exactly **one group**, and a group's primary location is chosen
+when it is created. Ours is in the US; the carriers are in Brazil.
+
+This matters less than it looks today. The latency that actually hurts is the
+Vercel function talking to the database, not the browser talking to the database,
+and Vercel Hobby runs functions in a US region too. Same continent, short hops.
+
+It matters a lot later. The target is both the Vercel function region and the Turso
+group in `gru` (Sao Paulo). Getting there means recreating the databases inside a
+new group, which requires a paid Turso plan and is painless **only while there is
+no production data**. Do it in the same step as the Vercel Pro upgrade, before the
+first pilot carrier.
+
+**Separate account before production.** These databases currently live in a
+personal Turso organisation alongside unrelated side projects. Once real carriers'
+fiscal documents are in `ai4logistics-prod`, that data should sit in an
+organisation owned by the company, not by one founder's personal account. Doing it
+early is a migration of empty databases; doing it late is a migration of five-year
+retained tax records.
+
 ### Why there is no local SQLite file
 
 `packages/db` uses `@libsql/client/web`, the HTTP-only client, because the default
 entrypoint pulls in native bindings that webpack cannot bundle and that break
 `next build`. The web client cannot open `file:` URLs.
 
-So local development talks to `ai4l-dev` over the network. You need connectivity to
+So local development talks to `ai4logistics-dev` over the network. You need connectivity to
 run the app locally. If that ever becomes intolerable, the fix is a second client
 instance behind an environment check, not switching the shared one back.
 
@@ -49,14 +71,14 @@ value per environment, which is the whole mechanism here.
 
 | Variable | Production | Preview | Development |
 |---|---|---|---|
-| `TURSO_DATABASE_URL` | `ai4l-prod` | `ai4l-preview` | `ai4l-dev` |
+| `TURSO_DATABASE_URL` | `ai4logistics-prod` | `ai4logistics-preview` | `ai4logistics-dev` |
 | `TURSO_AUTH_TOKEN` | prod token | preview token | dev token |
 | `BLOB_READ_WRITE_TOKEN` | prod store | preview store | dev store |
 | `CRON_SECRET` | unique | unique | unique |
 | `FISCAL_PROVIDER` | `fake` for now | `fake` | `fake` |
 | `MDFE_CLOSURE_ALERT_HOURS` | `24` | `24` | `24` |
 
-Locally, the same values live in `.env.local`, pointed at `ai4l-dev`. That file is
+Locally, the same values live in `.env.local`, pointed at `ai4logistics-dev`. That file is
 gitignored and must stay that way. `gitleaks` runs on every PR, but a secret is
 only truly safe if it never reaches a commit in the first place.
 
@@ -99,8 +121,8 @@ Preview databases drift. When a preview branch's schema gets confusing, reset it
 rather than debugging it:
 
 ```bash
-turso db destroy ai4l-preview --yes
-turso db create ai4l-preview --group default
+turso db destroy ai4logistics-preview --yes
+turso db create ai4logistics-preview --group default
 # update the Preview env var in Vercel with the new URL and token
 ```
 

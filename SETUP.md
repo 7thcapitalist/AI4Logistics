@@ -56,24 +56,34 @@ Full reasoning in `docs/ENVIRONMENTS.md`. The short version: production, preview
 and development are separate databases so that a broken migration in a PR cannot
 reach a carrier's fiscal documents.
 
-```bash
-# install (Linux/WSL; macOS: brew install tursodatabase/tap/turso)
-curl -sSfL https://get.tur.so/install.sh | bash
-turso auth signup
+Do this in the dashboard at **app.turso.tech**, not the CLI. The Turso CLI has no
+native Windows build (it requires WSL), and nothing in this repo needs it:
+`db:migrate`, `db:generate`, `db:seed` and `db:check` all run through Node and
+drizzle. The CLI is only useful later for `turso db shell`.
 
-# gru is Sao Paulo: closest region to the customers
-turso db create ai4l-prod    --group default --location gru
-turso db create ai4l-preview --group default --location gru
-turso db create ai4l-dev     --group default --location gru
+Create three databases and copy each one's URL and a generated auth token:
 
-# for each, grab the URL and a token
-turso db show ai4l-dev --url
-turso db tokens create ai4l-dev
+```
+ai4logistics-prod
+ai4logistics-preview
+ai4logistics-dev
 ```
 
+**On region.** Turso auto-detects the group location from where you create it, and
+the Free plan allows exactly one group, which cannot be split later. Ours landed in
+the US. That is survivable and arguably correct for now, because the latency that
+matters is Vercel function to database, not user to database, and Vercel Hobby also
+runs functions in a US region. Keep the two on the same continent and the round
+trips stay short.
+
+The target state is both in `gru` (Sao Paulo), close to the carriers. Moving there
+means recreating the databases in a new group, which needs a paid Turso plan and is
+trivial **only while there is no production data**. So it belongs in the same
+upgrade step as Vercel Pro, before the first pilot carrier, not after.
+
 - [ ] Three databases created
-- [ ] `ai4l-dev` URL and token in `.env.local`
-- [ ] `ai4l-prod` URL and token in **GitHub Secrets** as `TURSO_DATABASE_URL_PROD`
+- [ ] `ai4logistics-dev` URL and token in `.env.local`
+- [ ] `ai4logistics-prod` URL and token in **GitHub Secrets** as `TURSO_DATABASE_URL_PROD`
       and `TURSO_AUTH_TOKEN_PROD`, not on anyone's laptop
 - [ ] `pnpm db:migrate` then `pnpm db:seed` against dev, and confirm two
       organisations exist
@@ -137,11 +147,11 @@ is off. It is committed and ready for the day you upgrade.
 No features. The point is to prove the whole pipe works end to end while it is still
 trivial to debug.
 
-- [ ] `pnpm db:migrate` and `pnpm db:seed` against `ai4l-dev`
+- [ ] `pnpm db:migrate` and `pnpm db:seed` against `ai4logistics-dev`
 - [ ] `pnpm dev`, confirm the home page renders trips for organisation 1
 - [ ] Open a PR, confirm the Vercel **Preview** deployment builds and that it is
-      reading `ai4l-preview`, not dev and not prod
-- [ ] Run the production migration workflow against `ai4l-prod`
+      reading `ai4logistics-preview`, not dev and not prod
+- [ ] Run the production migration workflow against `ai4logistics-prod`
 - [ ] Merge, confirm the **Production** deployment builds and renders
 - [ ] Hit `/api/cron/mdfe-closure-alerts` in production with the `CRON_SECRET`
       bearer token and confirm it returns 200 rather than 401
