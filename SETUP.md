@@ -82,7 +82,9 @@ trivial **only while there is no production data**. So it belongs in the same
 upgrade step as Vercel Pro, before the first pilot carrier, not after.
 
 - [ ] Three databases created
-- [ ] `ai4logistics-dev` URL and token in `.env.local`
+- [ ] `ai4logistics-dev` URL and token in `.env.local` **at the repository root**,
+      not inside `packages/db`. `packages/db/src/env.ts` finds the root by walking
+      up to `pnpm-workspace.yaml`, so the file only works in that one place
 - [ ] `ai4logistics-prod` URL and token in **GitHub Secrets** as `TURSO_DATABASE_URL_PROD`
       and `TURSO_AUTH_TOKEN_PROD`, not on anyone's laptop
 - [ ] `pnpm db:migrate` then `pnpm db:seed` against dev, and confirm two
