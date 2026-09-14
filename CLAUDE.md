@@ -146,6 +146,9 @@ Full rules in `CONTRIBUTING.md`. The short version:
 
 ## Commands
 
+Environments, the three databases, migration procedure and the cron constraints
+are in `docs/ENVIRONMENTS.md`. Read it before touching an env var or a migration.
+
 ```bash
 pnpm dev            # everything
 pnpm test           # vitest across the workspace

@@ -1,0 +1,56 @@
+name: Migrate production database
+
+# MANUAL ONLY. Not triggered by push.
+#
+# Applying a migration to production is a decision someone makes after reading the
+# SQL, not a side effect of a merge. Turso Free keeps 1 day of point-in-time
+# restore, so a bad migration noticed a day late is not recoverable.
+#
+# This also means the production database token lives in GitHub Secrets and never
+# on anyone's laptop.
+#
+# Required secrets (Settings, Secrets and variables, Actions):
+#   TURSO_DATABASE_URL_PROD
+#   TURSO_AUTH_TOKEN_PROD
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type MIGRATE to confirm you have read the SQL being applied'
+        required: true
+        type: string
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - name: Check confirmation
+        if: ${{ inputs.confirm != 'MIGRATE' }}
+        run: |
+          echo "Confirmation was '${{ inputs.confirm }}', expected 'MIGRATE'."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Show pending migrations
+        run: |
+          echo "Migration files in this commit:"
+          ls -1 packages/db/drizzle/*.sql
+
+      - name: Apply migrations to production
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL_PROD }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN_PROD }}
+        run: pnpm db:migrate
