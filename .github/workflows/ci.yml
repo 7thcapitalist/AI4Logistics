@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      # A schema edit without a generated migration must not merge.
+      # SQLite's ALTER TABLE is limited and Drizzle will plan a table rebuild for
+      # some changes. Production is not where you want to find that out.
+      - name: Schema and migrations are in sync
+        run: pnpm db:check
+
+  diff-size:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Advisory only. Never blocks. A 3,000-line agent-written PR is not wrong,
+      # but the reviewer deserves to know before they open it.
+      - name: Report diff size
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          CHANGED=$(git diff --shortstat origin/${{ github.base_ref }}...HEAD)
+          echo "Diff against ${{ github.base_ref }}: $CHANGED"
+          echo "### Diff size" >> $GITHUB_STEP_SUMMARY
+          echo "\`$CHANGED\`" >> $GITHUB_STEP_SUMMARY

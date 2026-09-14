@@ -1,0 +1,17 @@
+# Not active yet, deliberately. Note also that CODEOWNERS review enforcement
+# requires a paid plan on private repos, so on Free this file is inert twice over.
+#
+# Not active yet, deliberately.
+#
+# Per-package ownership is the fix for two agents colliding in the same module.
+# That problem has not happened yet, and a review requirement nobody needs is a
+# tax on a three-person team. The file is here so turning it on is a one-line
+# change on the day it starts to hurt.
+#
+# To activate: uncomment, replace the handles, and add
+# "Require review from Code Owners" to the main ruleset.
+
+# /packages/db/        @founder-a
+# /packages/fiscal/    @founder-b
+# /packages/core/      @founder-c
+# /docs/adr/           @founder-a @founder-b @founder-c

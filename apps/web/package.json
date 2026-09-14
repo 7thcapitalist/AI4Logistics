@@ -1,0 +1,29 @@
+{
+  "name": "@ai4l/web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@ai4l/core": "workspace:*",
+    "@ai4l/db": "workspace:*",
+    "@ai4l/fiscal": "workspace:*",
+    "@ai4l/notifications": "workspace:*",
+    "@ai4l/ui": "workspace:*",
+    "next": "^14.2.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "@types/react": "^18.3.11",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.2"
+  }
+}

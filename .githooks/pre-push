@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# Blocks a direct push to main.
+#
+# Why this exists: on GitHub Free with a private repo, branch protection does not
+# work. Configured rulesets silently do nothing. This hook is the only technical
+# guard on main until the plan changes, so all three of us install it.
+#
+# Install:  pnpm hooks:install    (sets core.hooksPath to .githooks)
+#
+# It is per-machine and `--no-verify` bypasses it. That is fine: it is here to stop
+# an accident at 11pm, not to stop someone who has decided to push to main.
+
+protected="main"
+remote_ref_prefix="refs/heads/"
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  branch="${remote_ref#$remote_ref_prefix}"
+
+  if [ "$branch" = "$protected" ]; then
+    # The very first push creates main on the remote, and that push is legitimate.
+    # Git reports an all-zero remote_sha when the remote ref does not exist yet.
+    case "$remote_sha" in
+      *[!0]*) ;;                 # remote main exists: fall through and block
+      *) exit 0 ;;               # remote main does not exist: this is the first push
+    esac
+
+    echo ""
+    echo "  Refusing to push directly to '$protected'."
+    echo ""
+    echo "  main is always deployable and every change goes through a PR,"
+    echo "  including one-line fixes. See CONTRIBUTING.md."
+    echo ""
+    echo "    git checkout -b <initials>/<type>/<description>"
+    echo "    git push -u origin HEAD"
+    echo ""
+    echo "  GitHub cannot enforce this for us on the Free plan, so this hook does."
+    echo ""
+    exit 1
+  fi
+done
+
+exit 0
