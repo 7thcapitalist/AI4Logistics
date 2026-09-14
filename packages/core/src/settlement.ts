@@ -6,7 +6,7 @@
  * product. It is also the number a driver argues about, so it has to be right and
  * it has to be explainable line by line.
  */
-import { assertCentavos, type Centavos } from "./money.js";
+import { assertCentavos, type Centavos } from "./money";
 
 export type CostKind = "fuel" | "toll" | "advance" | "other";
 

@@ -1,6 +1,6 @@
-import { FakeProvider } from "./fake.js";
-import { ProviderNotConfiguredError } from "./errors.js";
-import type { FiscalProvider } from "./provider.js";
+import { FakeProvider } from "./fake";
+import { ProviderNotConfiguredError } from "./errors";
+import type { FiscalProvider } from "./provider";
 
 export function getProvider(name = process.env.FISCAL_PROVIDER ?? "fake"): FiscalProvider {
   switch (name) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { FakeProvider } from "./fake.js";
-import type { EmissionRequest } from "./provider.js";
+import { FakeProvider } from "./fake";
+import type { EmissionRequest } from "./provider";
 
 const req = (over: Partial<EmissionRequest> = {}): EmissionRequest => ({
   kind: "cte",

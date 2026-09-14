@@ -2,7 +2,9 @@ export class FiscalProviderError extends Error {
   constructor(
     message: string,
     readonly provider: string,
-    readonly cause?: unknown,
+    // `override` is required: Error already declares `cause` in ES2022,
+    // and tsconfig.base.json sets noImplicitOverride.
+    public override readonly cause?: unknown,
   ) {
     super(message);
     this.name = "FiscalProviderError";

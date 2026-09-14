@@ -1,4 +1,4 @@
-export * from "./provider.js";
-export * from "./fake.js";
-export * from "./errors.js";
-export { getProvider } from "./registry.js";
+export * from "./provider";
+export * from "./fake";
+export * from "./errors";
+export { getProvider } from "./registry";

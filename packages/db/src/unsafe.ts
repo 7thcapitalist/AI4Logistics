@@ -8,23 +8,48 @@
  *
  * Use `forOrg(orgId)` from `@ai4l/db`. See ADR 0002.
  *
- * If you have a genuine need this file's absence blocks, raise it in the PR. There
- * is probably a scoped way to do it, and if there is not, that is a decision the
- * three of you should make together rather than one an agent makes silently.
+ * Connection is created lazily, on first query, NOT at import time. Importing this
+ * module must never throw: `next build` imports the whole module graph while
+ * collecting pages, and a module-scope throw on a missing env var turns a missing
+ * local .env into a failed production build with a confusing stack trace.
  */
-import { createClient } from "@libsql/client";
+// `@libsql/client/web` rather than `@libsql/client`: the web entrypoint speaks
+// HTTP only and pulls in no native bindings. The default entrypoint drags in the
+// native `libsql` package, which webpack cannot bundle and which breaks
+// `next build`. Talking to Turso Cloud over HTTP is the architecture anyway
+// (ADR 0001 / the setup plan: no connection pooling problem in serverless), so
+// this is the correct client, not a workaround.
+//
+// Trade-off: the web client cannot open `file:` URLs, so local development runs
+// against a Turso Cloud dev database rather than a local SQLite file.
+import { createClient } from "@libsql/client/web";
 import { drizzle } from "drizzle-orm/libsql";
-import * as schema from "./schema.js";
+import * as schema from "./schema";
 
-const url = process.env.TURSO_DATABASE_URL;
-if (!url) throw new Error("TURSO_DATABASE_URL is not set");
+type Db = ReturnType<typeof drizzle<typeof schema>>;
 
-export const client = createClient({
-  url,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
+let cached: Db | null = null;
 
-/** Raw, unscoped, dangerous. */
-export const unsafeDb = drizzle(client, { schema });
+/** Raw, unscoped, dangerous. Call it; do not export the result. */
+export function unsafeDb(): Db {
+  if (cached) return cached;
 
-export type UnsafeDb = typeof unsafeDb;
+  const url = process.env.TURSO_DATABASE_URL;
+  if (!url) {
+    throw new Error(
+      "TURSO_DATABASE_URL is not set. Copy .env.example to .env.local and fill in " +
+        "your Turso Cloud credentials (see SETUP.md, day 1).",
+    );
+  }
+
+  // authToken must be OMITTED rather than passed as undefined:
+  // tsconfig sets exactOptionalPropertyTypes, and an explicit undefined is an error.
+  const authToken = process.env.TURSO_AUTH_TOKEN;
+  cached = drizzle(
+    createClient(authToken ? { url, authToken } : { url }),
+    { schema },
+  );
+  return cached;
+}
+
+export type UnsafeDb = Db;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assertTransition, canTransition, idempotencyKey } from "./trip-state.js";
+import { assertTransition, canTransition, idempotencyKey } from "./trip-state";
 
 describe("trip state machine", () => {
   it("walks the happy path", () => {

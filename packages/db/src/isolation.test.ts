@@ -7,15 +7,23 @@
  * Adding a table to that list to make this test pass is a red flag in review.
  */
 import { describe, expect, it } from "vitest";
-import { getTableConfig } from "drizzle-orm/sqlite-core";
-import type { SQLiteTable } from "drizzle-orm/sqlite-core";
-import * as schema from "./schema.js";
+import { is } from "drizzle-orm";
+import { getTableConfig, SQLiteTable } from "drizzle-orm/sqlite-core";
+import * as schema from "./schema";
 
 /** Genuinely not carrier-scoped. Adding to this list requires a reason in the PR. */
 const GLOBAL_TABLES = new Set(["organizations", "fiscal_provider_outages"]);
 
-const tables = Object.values(schema).filter(
-  (v): v is SQLiteTable => typeof v === "object" && v !== null && "_" in v,
+/**
+ * Detect tables with drizzle's own `is()`. A hand-rolled structural check
+ * (for example `"_" in v`) silently matches NOTHING, because drizzle keeps its
+ * internals on symbol keys. That failure mode is nasty here: every per-table
+ * assertion below would simply not run, and this file would report success
+ * while checking nothing at all. The "found the schema" test exists to catch
+ * exactly that, and it is the reason this bug was caught rather than shipped.
+ */
+const tables = (Object.values(schema) as unknown[]).filter(
+  (v): v is SQLiteTable => is(v, SQLiteTable),
 );
 
 describe("tenant isolation", () => {

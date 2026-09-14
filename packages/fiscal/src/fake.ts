@@ -12,7 +12,7 @@ import type {
   EmissionRequest,
   EmissionResult,
   FiscalProvider,
-} from "./provider.js";
+} from "./provider";
 
 export interface FakeProviderOptions {
   /** 0 to 1. Fraction of issues that come back rejected. Default 0. */
