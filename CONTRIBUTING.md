@@ -144,6 +144,7 @@ further on it.
 | `CLAUDE.md` | Stack, layout, invariants, rules for agents |
 | `docs/adr/` | Decisions expensive to reverse. Numbered, append-only |
 | `docs/domain/glossary.md` | Fiscal vocabulary |
+| `docs/ENVIRONMENTS.md` | prod/preview/dev, the three databases, migrations, cron |
 
 Weekly notes, GTM, meeting decisions and company material stay out of the repo.
 **The repo documents the system, not the company.**

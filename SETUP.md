@@ -50,10 +50,33 @@ At that point it is about 4 USD per user per month on Team, so roughly 12 USD fo
 three. The reason to pay is not the feature list, it is that unenforced review among
 three people running agents degrades quietly, and you find out afterwards.
 
-### Turso
+### Turso: three databases
 
-- [ ] Account, then a database in the `gru` (Sao Paulo) region
-- [ ] Copy the database URL and an auth token into `.env.local`
+Full reasoning in `docs/ENVIRONMENTS.md`. The short version: production, preview
+and development are separate databases so that a broken migration in a PR cannot
+reach a carrier's fiscal documents.
+
+```bash
+# install (Linux/WSL; macOS: brew install tursodatabase/tap/turso)
+curl -sSfL https://get.tur.so/install.sh | bash
+turso auth signup
+
+# gru is Sao Paulo: closest region to the customers
+turso db create ai4l-prod    --group default --location gru
+turso db create ai4l-preview --group default --location gru
+turso db create ai4l-dev     --group default --location gru
+
+# for each, grab the URL and a token
+turso db show ai4l-dev --url
+turso db tokens create ai4l-dev
+```
+
+- [ ] Three databases created
+- [ ] `ai4l-dev` URL and token in `.env.local`
+- [ ] `ai4l-prod` URL and token in **GitHub Secrets** as `TURSO_DATABASE_URL_PROD`
+      and `TURSO_AUTH_TOKEN_PROD`, not on anyone's laptop
+- [ ] `pnpm db:migrate` then `pnpm db:seed` against dev, and confirm two
+      organisations exist
 
 Free tier is 5GB storage, 500M rows read per month, 10M written, 100 databases and
 1-day point-in-time restore. That covers 15 to 20 pilot carriers comfortably.
@@ -63,13 +86,29 @@ customer**. One day of restore on five years of fiscal documents is thin.
 
 ### Vercel
 
-- [ ] Account, connect the GitHub organisation
-- [ ] Import the repository, set the root directory to `apps/web`
-- [ ] Add the environment variables from `.env.example`
+- [ ] Account, connect the GitHub org, import the repository
+- [ ] **Root directory: `apps/web`**
+- [ ] Environment variables per environment, per the table in
+      `docs/ENVIRONMENTS.md`. Production, Preview and Development each get a
+      different `TURSO_DATABASE_URL`
+- [ ] Leave Vercel Authentication on for Preview deployments
 
-Total to start: **0 USD a month.** GitHub Free, Turso free tier, Vercel free tier.
-The first real cost is Turso Developer at 4.99 USD for 10-day restore, which is due
-before the first paying customer, not before the first line of code.
+**Two things about the Hobby plan you need to know before you deploy.**
+
+*Cron jobs run once per day, maximum.* An hourly expression does not degrade
+gracefully, it **fails the deployment outright**. `vercel.json` is set to
+`0 9 * * *` for this reason. The MDF-e alert is the product, and a once-a-day
+imprecise check is not the product, so **Vercel Pro is required before the first
+pilot carrier.** Switch the schedule to `0 * * * *` the day you upgrade.
+
+*Hobby is non-commercial use only,* per Vercel's fair use guidelines, and it has no
+team features, so your cofounders cannot be added. Fine while this is a prototype
+with no users. Not fine once a carrier is relying on it. Pro is 20 USD per seat per
+month.
+
+Total to start: **0 USD a month.** GitHub Free, Turso free tier, Vercel Hobby.
+The first real costs, both due before the first pilot: Vercel Pro at 20 USD, and
+Turso Developer at 4.99 USD for 10-day restore.
 
 ---
 
@@ -98,10 +137,17 @@ is off. It is committed and ready for the day you upgrade.
 No features. The point is to prove the whole pipe works end to end while it is still
 trivial to debug.
 
-- [ ] A page that reads one row from Turso and renders it
-- [ ] Through a PR, reviewed, squash merged
-- [ ] Deployed to production
-- [ ] Confirm the Vercel preview built on the PR too
+- [ ] `pnpm db:migrate` and `pnpm db:seed` against `ai4l-dev`
+- [ ] `pnpm dev`, confirm the home page renders trips for organisation 1
+- [ ] Open a PR, confirm the Vercel **Preview** deployment builds and that it is
+      reading `ai4l-preview`, not dev and not prod
+- [ ] Run the production migration workflow against `ai4l-prod`
+- [ ] Merge, confirm the **Production** deployment builds and renders
+- [ ] Hit `/api/cron/mdfe-closure-alerts` in production with the `CRON_SECRET`
+      bearer token and confirm it returns 200 rather than 401
+
+That last one matters: cron never fires on preview deployments, so a broken alert
+route is invisible until production. Curl it by hand at least once.
 
 If anything here is painful, fix it now. It will not get easier once there is real
 code in the way.
