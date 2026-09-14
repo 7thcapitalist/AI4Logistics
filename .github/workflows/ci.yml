@@ -18,9 +18,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      # No `version:` here, deliberately. pnpm/action-setup reads the version from
+      # package.json's `packageManager` field. Specifying both makes the action fail
+      # with "Multiple versions of pnpm specified", in about five seconds, before
+      # any real work happens. Bump the version in package.json, not here.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - uses: actions/setup-node@v4
         with:
