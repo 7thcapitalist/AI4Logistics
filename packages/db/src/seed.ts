@@ -6,6 +6,8 @@
  * signed in as Rodoviario Goias, the isolation guarantee is broken and that is a
  * stop-everything bug.
  */
+// MUST be first: loads .env.local before anything reads process.env
+import "./env";
 import { forOrg } from "./tenant";
 import { unsafeDb } from "./unsafe";
 import * as schema from "./schema";
