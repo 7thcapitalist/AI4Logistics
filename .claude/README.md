@@ -11,3 +11,8 @@ rather than using a submodule, so that a rule change and the code change that
 motivated it land in the same PR.
 
 The rules an agent must respect live in `CLAUDE.md` at the repository root, not here.
+
+
+
+
+Editing this file as test
