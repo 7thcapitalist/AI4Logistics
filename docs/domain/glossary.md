@@ -1,5 +1,20 @@
 # Brazilian freight fiscal glossary
 
+> ## THE VERIFIED SOURCE IS NOW ELSEWHERE IN THIS FOLDER.
+>
+> Three documents in `docs/domain/` were researched against primary sources and
+> carry a 🟢/🟡/🔴 confidence mark on every claim. Where they disagree with an
+> entry below, they win, and the entry below is the one that is wrong:
+>
+> - [`fluxos-documentais.md`](./fluxos-documentais.md) — the end-to-end map of
+>   CT-e, MDF-e, CIOT and vale-pedágio, with the open questions listed in §8.
+> - [`verificacao-2026-09.md`](./verificacao-2026-09.md) — the September 2026
+>   verification pass over those open questions.
+> - [`obrigatoriedade-mdfe-por-uf.md`](./obrigatoriedade-mdfe-por-uf.md) — when
+>   an MDF-e is required, per state. It is a table, not a constant.
+>
+> This file is kept as written. It is still a list of questions, not rules.
+
 > ## UNVERIFIED DRAFT. DO NOT CODE AGAINST THIS FILE.
 >
 > Every entry without a **Source** link is a hint about what to look up, not a rule.
@@ -62,29 +77,29 @@ payment. Mandatory on the routes it applies to.
 
 ## Parties
 
-| Term | Meaning |
-|---|---|
-| **Transportadora** | The carrier. Our customer. 5-50 trucks is our ICP |
-| **TAC** | Autonomous driver, owns the truck, contracted per trip. Triggers CIOT |
-| **Embarcador** | Shipper. Our customer's customer |
-| **Destinatario** | Consignee, who receives the cargo |
+| Term               | Meaning                                                               |
+| ------------------ | --------------------------------------------------------------------- |
+| **Transportadora** | The carrier. Our customer. 5-50 trucks is our ICP                     |
+| **TAC**            | Autonomous driver, owns the truck, contracted per trip. Triggers CIOT |
+| **Embarcador**     | Shipper. Our customer's customer                                      |
+| **Destinatario**   | Consignee, who receives the cargo                                     |
 
 ## Bodies
 
-| Term | What it does |
-|---|---|
-| **ANTT** | Federal land transport regulator. CIOT, vale-pedagio, the fines |
-| **SEFAZ** | State finance authority. Authorises CT-e and MDF-e |
+| Term                | What it does                                                                                                                   |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **ANTT**            | Federal land transport regulator. CIOT, vale-pedagio, the fines                                                                |
+| **SEFAZ**           | State finance authority. Authorises CT-e and MDF-e                                                                             |
 | **SEFAZ rejection** | A rejection code plus message. Must be translated to a clear owner-facing error, per P0 requirement 5. Never show the raw code |
 
 ## Operations
 
-| Term | Meaning |
-|---|---|
-| **Settlement (acerto)** | Freight minus fuel, tolls and advances. The driver payout. Integer centavos, always |
-| **Adiantamento** | Advance paid to the driver before the trip. Subtracted at settlement |
-| **POD (canhoto)** | Proof of delivery. Photo, timestamp, GPS. The evidence in a delivery dispute |
-| **A1 certificate** | Digital certificate used to sign fiscal documents. Who holds it is an open question in ADR 0003 |
+| Term                    | Meaning                                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
+| **Settlement (acerto)** | Freight minus fuel, tolls and advances. The driver payout. Integer centavos, always             |
+| **Adiantamento**        | Advance paid to the driver before the trip. Subtracted at settlement                            |
+| **POD (canhoto)**       | Proof of delivery. Photo, timestamp, GPS. The evidence in a delivery dispute                    |
+| **A1 certificate**      | Digital certificate used to sign fiscal documents. Who holds it is an open question in ADR 0003 |
 
 ---
 

@@ -19,13 +19,13 @@ nothing. No warning, no error.
 
 So on Free:
 
-| Rule | Status |
-|---|---|
-| CI runs on every PR | **Works.** Actions runs on private repos on Free |
-| A red CI run blocks the merge | **Does not work.** You can merge red |
-| One approval required | **Does not work.** You can merge unreviewed |
-| Direct push to `main` blocked | **Does not work.** Except locally, see below |
-| Force-push to `main` blocked | **Does not work** |
+| Rule                          | Status                                           |
+| ----------------------------- | ------------------------------------------------ |
+| CI runs on every PR           | **Works.** Actions runs on private repos on Free |
+| A red CI run blocks the merge | **Does not work.** You can merge red             |
+| One approval required         | **Does not work.** You can merge unreviewed      |
+| Direct push to `main` blocked | **Does not work.** Except locally, see below     |
+| Force-push to `main` blocked  | **Does not work**                                |
 
 Everything in `CONTRIBUTING.md` still applies. It is just enforced by the three of
 you rather than by GitHub, and the local pre-push hook below covers the one case
@@ -107,13 +107,13 @@ customer**. One day of restore on five years of fiscal documents is thin.
 
 **Two things about the Hobby plan you need to know before you deploy.**
 
-*Cron jobs run once per day, maximum.* An hourly expression does not degrade
+_Cron jobs run once per day, maximum._ An hourly expression does not degrade
 gracefully, it **fails the deployment outright**. `vercel.json` is set to
 `0 9 * * *` for this reason. The MDF-e alert is the product, and a once-a-day
 imprecise check is not the product, so **Vercel Pro is required before the first
 pilot carrier.** Switch the schedule to `0 * * * *` the day you upgrade.
 
-*Hobby is non-commercial use only,* per Vercel's fair use guidelines, and it has no
+_Hobby is non-commercial use only,_ per Vercel's fair use guidelines, and it has no
 team features, so your cofounders cannot be added. Fine while this is a prototype
 with no users. Not fine once a carrier is relying on it. Pro is 20 USD per seat per
 month.
@@ -203,14 +203,27 @@ across several projects.
 
 ## Day 6: close the open decisions
 
-- [ ] **ADR 0003, the fiscal emission provider.** This is on the critical path. It
-      sets unit cost per trip and therefore the pricing floor. Read the API docs of
-      **at least two** providers before designing the adapter interface, otherwise
-      the interface encodes one vendor's assumptions and defeats its own purpose
-- [ ] Implement `FakeProvider` fully, so the trip flow, alert job, settlement and
-      the entire UI can be built and tested while the comparison happens
-- [ ] **Source the MDF-e closure deadline and its penalty.** The alert threshold is
-      currently a guessed 24 hours and the alert is the product
+- [x] **ADR 0003, the fiscal emission provider.** Done: Focus NFe and Webmania BR
+      were both read before the interface was designed, and the interface carries
+      the marks of that (`capacidades`, asynchronous emission, our own idempotency).
+      Still **Proposed**, not Accepted: no real emission has been made. The
+      remaining work is a spike with homologação credentials
+- [x] Implement the fake provider fully. `FakeFiscalProvider` and
+      `FakeCiotProvider` in `packages/fiscal/src/fake/` are fully deterministic and
+      cover the happy path plus six real rejection codes
+- [ ] **ADR 0006, the CIOT provider.** New, and it exists because no fiscal API
+      house issues a CIOT. Proposed: Extratta. Needs a commercial conversation,
+      since no IPEF publishes prices
+- [x] **Source the MDF-e closure deadline and its penalty.** Done, and the answer
+      overturned the premise: **there is no deadline in hours or days.** The Ajuste
+      SINIEF 21/2010 ties closure to events, not to a clock. The real, timeable
+      consequences are the immediate block on the UF-pair plus vehicle and, at 30
+      days, rejection 686 blocking the whole CNPJ. The guessed 24 hours is gone from
+      the product. See `docs/domain/fluxos-documentais.md` §0.1 and §3.5, and
+      `podeEncerrarMdfe` in `@ai4l/core`, which refuses to invent a clock
+- [ ] **CIOT becomes mandatory inside the MDF-e on 23/11/2026** (rejection 684),
+      per NT MDF-e 2026.001. That date comes from a vendor, not from SVRS: confirm
+      it. It is item 1 of `docs/domain/fluxos-documentais.md` §8
 
 ---
 

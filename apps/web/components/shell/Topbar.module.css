@@ -1,0 +1,144 @@
+.topo {
+  grid-area: topo;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--altura-topo);
+  padding: 8px var(--gutter);
+  border-bottom: 1px solid var(--c-borda);
+  background: var(--c-superficie);
+}
+
+.titulo {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--c-texto);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.direita {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.campo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.rotulo {
+  font-size: 12px;
+  color: var(--c-texto-fraco);
+  white-space: nowrap;
+}
+
+.select {
+  min-height: var(--alvo);
+  max-width: 100%;
+  padding: 0 30px 0 10px;
+  border: 1px solid var(--c-borda-forte);
+  border-radius: var(--raio-1);
+  background: var(--c-superficie-2);
+  color: var(--c-texto);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  appearance: none;
+  background-image: linear-gradient(transparent, transparent);
+}
+
+.selectEnvolucro {
+  position: relative;
+  min-width: 0;
+}
+
+.seta {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--c-texto-fraco);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.grupo {
+  display: inline-flex;
+  border: 1px solid var(--c-borda-forte);
+  border-radius: var(--raio-1);
+  overflow: hidden;
+}
+
+.opcao {
+  min-height: var(--alvo);
+  padding: 0 12px;
+  border: 0;
+  background: var(--c-superficie-2);
+  color: var(--c-texto-suave);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.opcao + .opcao {
+  border-left: 1px solid var(--c-borda);
+}
+
+.opcao[aria-pressed="true"] {
+  background: var(--c-acento-fraco);
+  color: var(--c-texto);
+  font-weight: 600;
+}
+
+.nota {
+  font-size: 11px;
+  color: var(--c-texto-fraco);
+  max-width: 220px;
+  line-height: 1.3;
+}
+
+@media (max-width: 1100px) {
+  .nota {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .topo {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 8px var(--gutter);
+  }
+
+  .titulo {
+    order: 3;
+    flex: 1 0 100%;
+    font-size: 19px;
+    white-space: normal;
+  }
+
+  .rotulo {
+    display: none;
+  }
+
+  .direita {
+    margin-left: auto;
+  }
+
+  .select {
+    max-width: 46vw;
+    text-overflow: ellipsis;
+  }
+}

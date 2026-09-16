@@ -1,0 +1,204 @@
+.topo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+/* --------------------------------------------------------------- abas --- */
+
+.abas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+}
+
+.aba {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--alvo);
+  padding: 0 14px;
+  border-radius: var(--raio-1);
+  color: var(--c-texto-suave);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.aba:hover {
+  background: var(--c-superficie-2);
+  color: var(--c-texto);
+}
+
+.aba[aria-current="page"] {
+  background: var(--c-acento-fraco);
+  color: var(--c-texto);
+  font-weight: 600;
+}
+
+.contagemAba {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--c-texto-fraco);
+}
+
+.abaLacuna {
+  border: 1px solid var(--c-borda-forte);
+}
+
+.abaLacuna .contagemAba {
+  min-width: 24px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--c-acento);
+  color: var(--c-acento-contraste);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------ filtros --- */
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.campoBusca {
+  flex: 1 1 260px;
+}
+
+.rotulo {
+  font-size: 12px;
+  color: var(--c-texto-fraco);
+}
+
+.entrada,
+.select {
+  width: 100%;
+  min-height: var(--alvo);
+  padding: 0 12px;
+  border: 1px solid var(--c-borda-forte);
+  border-radius: var(--raio-1);
+  background: var(--c-superficie);
+  color: var(--c-texto);
+  font: inherit;
+  font-size: 14px;
+}
+
+.select {
+  padding-right: 30px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.envolucro {
+  position: relative;
+  min-width: 0;
+}
+
+.seta {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--c-texto-fraco);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.acoesFiltro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.botao {
+  min-height: var(--alvo);
+  padding: 0 14px;
+  border: 1px solid var(--c-borda-forte);
+  border-radius: var(--raio-1);
+  background: var(--c-superficie-2);
+  color: var(--c-texto);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.botao:hover {
+  background: var(--c-superficie);
+}
+
+.limpar {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo);
+  padding: 0 4px;
+  color: var(--c-texto-suave);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ------------------------------------------------------------- resumo --- */
+
+.resumo {
+  font-size: 13px;
+  color: var(--c-texto-fraco);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------- riscos sem viagem ligada --- */
+
+.riscosOrg {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+}
+
+.riscosOrgTitulo {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.riscosOrgDescricao {
+  font-size: 13px;
+  color: var(--c-texto-fraco);
+}
+
+@media (max-width: 760px) {
+  .abas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aba {
+    justify-content: space-between;
+    padding: 0 10px;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .campo,
+  .campoBusca {
+    flex: 1 1 100%;
+  }
+}

@@ -1,0 +1,503 @@
+/* ---------------------------------------------------------- cabeçalho --- */
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+}
+
+.identidade {
+  flex: 1 1 320px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.linhaTopo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.numero {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.rota {
+  font-size: 15px;
+  color: var(--c-texto);
+}
+
+/* Mesma razão do cartão da lista: no detalhe a rota pode quebrar em telas
+   estreitas em vez de estourar a caixa. */
+.rota :global(.rota) {
+  white-space: normal;
+  flex-wrap: wrap;
+}
+
+.fatos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+
+.fato {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fatoRotulo {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-texto-fraco);
+}
+
+.fatoValor {
+  font-size: 14px;
+  color: var(--c-texto);
+  font-variant-numeric: tabular-nums;
+}
+
+.acoesCabecalho {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.acoesRotulo {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-texto-fraco);
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--alvo);
+  margin-bottom: 4px;
+  color: var(--c-texto-suave);
+  font-size: 14px;
+}
+
+.voltar:hover {
+  color: var(--c-texto);
+}
+
+/* --------------------------------------------------------------- abas --- */
+
+.abas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 14px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+}
+
+.aba {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo);
+  padding: 0 14px;
+  border-radius: var(--raio-1);
+  color: var(--c-texto-suave);
+  font-size: 14px;
+}
+
+.aba:hover {
+  background: var(--c-superficie-2);
+  color: var(--c-texto);
+}
+
+.aba[aria-current="page"] {
+  background: var(--c-acento-fraco);
+  color: var(--c-texto);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------- painel --- */
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bloco {
+  padding: 16px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+}
+
+.blocoTitulo {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--c-texto);
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.definicoes {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 14px;
+  font-size: 14px;
+}
+
+.definicoes dt {
+  color: var(--c-texto-fraco);
+  white-space: nowrap;
+}
+
+.definicoes dd {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+.parte {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-1);
+  background: var(--c-superficie-2);
+}
+
+.partePapel {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-texto-fraco);
+}
+
+.parteNome {
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.parteExplicacao {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  line-height: 1.4;
+}
+
+.ufs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.uf {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border: 1px solid var(--c-borda-forte);
+  border-radius: 999px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------- documentos --- */
+
+.docs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doc {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+  scroll-margin-top: calc(var(--altura-topo) + 12px);
+}
+
+.docTopo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.docTitulo {
+  font-size: 15px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.rejeicao {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--c-borda-forte);
+  border-radius: var(--raio-1);
+  background: var(--c-superficie-2);
+}
+
+.rejeicaoRotulo {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-texto-fraco);
+}
+
+.rejeicaoCru {
+  font-family: var(--fonte-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.rejeicaoDica {
+  font-size: 12px;
+  color: var(--c-texto-fraco);
+}
+
+.rejeicaoExplicacao {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.acoesDoc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--c-borda);
+}
+
+/* ------------------------------------------------------ linha do tempo --- */
+
+.linhaTopoBarra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.linhaDescricao {
+  font-size: 13px;
+  color: var(--c-texto-fraco);
+  max-width: 62ch;
+}
+
+.eventos {
+  display: flex;
+  flex-direction: column;
+}
+
+.evento {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  gap: 12px;
+  padding: 0 0 16px;
+}
+
+.trilho {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.ponto {
+  position: relative;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  margin-top: 6px;
+  border-radius: 50%;
+  border: 2px solid var(--c-borda-forte);
+  background: var(--c-superficie);
+}
+
+.trilho::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: -16px;
+  left: 50%;
+  width: 1px;
+  margin-left: -0.5px;
+  background: var(--c-borda);
+}
+
+.evento:last-child .trilho::before {
+  display: none;
+}
+
+.corpoEvento {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-1);
+  background: var(--c-superficie);
+  min-width: 0;
+}
+
+/* Quem escreveu o evento muda o peso visual: fisco e tomador são o que a
+   transportadora não controla. */
+.evento[data-autor="fisco"] .corpoEvento,
+.evento[data-autor="tomador"] .corpoEvento {
+  background: var(--c-superficie-2);
+  border-color: var(--c-borda-forte);
+  border-left-width: 3px;
+}
+
+.evento[data-autor="fisco"] .ponto {
+  background: var(--c-borda-forte);
+}
+
+.cabecalhoEvento {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.codigoEvento {
+  font-family: var(--fonte-mono);
+  font-size: 12px;
+  padding: 2px 6px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-1);
+  color: var(--c-texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.nomeEvento {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.metaEvento {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 12px;
+  color: var(--c-texto-fraco);
+  font-variant-numeric: tabular-nums;
+}
+
+.autorFora {
+  font-weight: 650;
+  color: var(--c-texto-suave);
+}
+
+.detalheEvento {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+  line-height: 1.45;
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--alvo);
+  padding: 0 14px;
+  border: 1px solid var(--c-borda-forte);
+  border-radius: var(--raio-1);
+  background: var(--c-superficie-2);
+  color: var(--c-texto);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.botao:hover {
+  background: var(--c-superficie);
+}
+
+.avisoCopia {
+  font-size: 13px;
+  color: var(--c-texto-suave);
+}
+
+/* ------------------------------------------------------------- stubs --- */
+
+.stub {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border: 1px dashed var(--c-borda-forte);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+}
+
+.stubTitulo {
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.stubTexto {
+  font-size: 14px;
+  color: var(--c-texto-suave);
+  max-width: 62ch;
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .acoesCabecalho {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .abas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aba {
+    justify-content: center;
+    padding: 0 8px;
+    text-align: center;
+  }
+
+  .definicoes {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .definicoes dt {
+    margin-top: 8px;
+  }
+}

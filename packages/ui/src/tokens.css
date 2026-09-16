@@ -1,0 +1,660 @@
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+/* ===========================================================================
+   AI4Logistics — tokens
+   Duas variantes de tema (patio, torre) trocáveis por data-theme no <html>.
+   O bloco :root carrega o default (patio) para que o primeiro paint, antes
+   de qualquer atributo existir, nunca renderize sem fundo.
+
+   Dois eixos de cor, deliberadamente disjuntos:
+     --status-*  estado de um documento ou viagem
+     --sev-*     severidade de um risco
+   Nenhum valor se repete entre os eixos. Um verde de "autorizado" nunca pode
+   ser lido como um laranja de "crítico".
+   =========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ----- camada semântica: estado (idêntica nas duas variantes) ----- */
+  --status-ok: #15803d;
+  --status-pendente: #b45309;
+  --status-processo: #1d4ed8;
+  --status-erro: #b91c1c;
+  --status-neutro: #6b7280;
+
+  --status-ok-bg: color-mix(in srgb, var(--status-ok) 12%, transparent);
+  --status-pendente-bg: color-mix(in srgb, var(--status-pendente) 12%, transparent);
+  --status-processo-bg: color-mix(in srgb, var(--status-processo) 12%, transparent);
+  --status-erro-bg: color-mix(in srgb, var(--status-erro) 12%, transparent);
+  --status-neutro-bg: color-mix(in srgb, var(--status-neutro) 12%, transparent);
+
+  /* ----- camada semântica: severidade de risco (eixo separado) ----- */
+  --sev-bloqueante: #7f1d1d;
+  --sev-critico: #c2410c;
+  --sev-alto: #a16207;
+  --sev-medio: #475569;
+
+  --sev-bloqueante-bg: color-mix(in srgb, var(--sev-bloqueante) 12%, transparent);
+  --sev-critico-bg: color-mix(in srgb, var(--sev-critico) 12%, transparent);
+  --sev-alto-bg: color-mix(in srgb, var(--sev-alto) 12%, transparent);
+  --sev-medio-bg: color-mix(in srgb, var(--sev-medio) 12%, transparent);
+
+  /* ----- stacks tipográficos ----- */
+  --font-figtree:
+    "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-archivo:
+    "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* ----- default de primeiro paint = variante Pátio ----- */
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --surface-alt: #f3f3ee;
+  --border: #e3e3dd;
+  --border-forte: #c9c9c1;
+  --text: #1a1a17;
+  --text-muted: #6b6b62;
+  --accent: #1f5f4a;
+  --accent-contraste: #ffffff;
+
+  --font-family: var(--font-figtree);
+  --font-base: 16px;
+  --leading: 1.6;
+  --radius: 12px;
+  --row-h: 3.5rem;
+  --cell-pad: 0.8rem;
+}
+
+/* ----------------------------------------------- Variante A: Pátio (clara) */
+[data-theme="patio"] {
+  color-scheme: light;
+
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --surface-alt: #f3f3ee;
+  --border: #e3e3dd;
+  --border-forte: #c9c9c1;
+  --text: #1a1a17;
+  --text-muted: #6b6b62;
+  --accent: #1f5f4a;
+  --accent-contraste: #ffffff;
+
+  --font-family: var(--font-figtree);
+  --font-base: 16px;
+  --leading: 1.6;
+  --radius: 12px;
+  --row-h: 3.5rem;
+  --cell-pad: 0.8rem;
+}
+
+/* ----------------------------------- Variante B: Torre (densa, escura) */
+[data-theme="torre"] {
+  color-scheme: dark;
+
+  --bg: #0d0d0f;
+  --surface: #151518;
+  --surface-alt: #1c1c21;
+  --border: #26262b;
+  --border-forte: #35353c;
+  --text: #ececef;
+  --text-muted: #8e8e99;
+  --accent: #5b7cfa;
+  --accent-contraste: #0d0d0f;
+
+  --font-family: var(--font-archivo);
+  --font-base: 13px;
+  --leading: 1.45;
+  --radius: 8px;
+  --row-h: 2.5rem;
+  --cell-pad: 0.45rem;
+}
+
+/* No escuro da Torre os semânticos clareiam: os tons de tema claro não têm
+   contraste suficiente sobre #0D0D0F. Os -bg herdam automaticamente porque o
+   color-mix é resolvido no mesmo elemento que redeclara --status-*. */
+[data-theme="torre"]:not([data-mode="light"]) {
+  --status-ok: #3dbe72;
+  --status-pendente: #e3a33c;
+  --status-processo: #6e8efb;
+  --status-erro: #f0605e;
+
+  --sev-bloqueante: #f0605e;
+  --sev-critico: #f08a3c;
+  --sev-alto: #e3a33c;
+  --sev-medio: #8e8e99;
+}
+
+[data-theme="torre"][data-mode="light"] {
+  color-scheme: light;
+
+  --bg: #ffffff;
+  --surface: #fafafa;
+  --surface-alt: #f3f3f5;
+  --border: #e5e5e7;
+  --border-forte: #d0d0d4;
+  --text: #111113;
+  --text-muted: #6e6e76;
+  --accent: #3b5bdb;
+  --accent-contraste: #ffffff;
+}
+
+/* =========================================================== reset leve */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-base);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-family);
+  line-height: var(--leading);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--accent);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* ============================================== utilitários tipográficos */
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===================================================== foco e movimento */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===========================================================================
+   Indicadores.
+   Regra dura do produto: cor nunca aparece sozinha. Todo indicador carrega
+   cor + rótulo em texto + marcador de forma. Se o usuário não distingue
+   verde de laranja, a forma e o texto ainda dizem tudo.
+   =========================================================================== */
+
+.indicador {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.15em 0.5em;
+  border-radius: calc(var(--radius) / 2);
+  border: 1px solid currentColor;
+  background: var(--indicador-bg, transparent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.indicador-forma {
+  font-size: 0.9em;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.indicador-rotulo {
+  letter-spacing: 0.01em;
+}
+
+.indicador-sub {
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* estado ausente: nunca some da tela, só esmaece */
+.indicador-ausente {
+  color: var(--text-muted);
+  border-style: dashed;
+  border-color: var(--border-forte);
+  background: transparent;
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------- trilha */
+
+.trilha {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.trilha-item-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.trilha-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.trilha-sep {
+  color: var(--border-forte);
+  flex: 0 0 auto;
+}
+
+/* ---------------------------------------------------------- severidade */
+
+.severidade {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.1em 0.45em;
+  border-radius: calc(var(--radius) / 3);
+  border: 1px solid currentColor;
+  background: var(--sev-bg, transparent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------- dados fiscais densos */
+
+.chave {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  cursor: help;
+  border-bottom: 1px dotted var(--border-forte);
+}
+
+.chave-completa {
+  display: inline-block;
+  max-width: 30ch;
+  word-break: break-all;
+  line-height: 1.5;
+  cursor: text;
+}
+
+.dinheiro {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  white-space: nowrap;
+}
+
+.dinheiro-moeda {
+  color: var(--text-muted);
+  margin-right: 0.25em;
+  font-size: 0.9em;
+}
+
+.dinheiro-negativo {
+  color: var(--status-erro);
+}
+
+.placa {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.05em 0.4em;
+  border: 1px solid var(--border-forte);
+  border-radius: calc(var(--radius) / 3);
+  background: var(--surface-alt);
+  white-space: nowrap;
+}
+
+.rota {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  white-space: nowrap;
+}
+
+.rota-local {
+  font-weight: 500;
+}
+
+.rota-uf {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.875em;
+  letter-spacing: 0.03em;
+}
+
+.rota-seta {
+  color: var(--text-muted);
+  flex: 0 0 auto;
+}
+
+/* ======================================================= ação e guardas */
+
+.acao-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  max-width: 34rem;
+}
+
+.acao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-height: calc(var(--row-h) * 0.72);
+  padding: 0 1em;
+  border-radius: calc(var(--radius) * 0.75);
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.acao-primario {
+  background: var(--accent);
+  color: var(--accent-contraste);
+  border-color: var(--accent);
+}
+
+.acao-primario:hover {
+  background: color-mix(in srgb, var(--accent) 86%, var(--text));
+}
+
+.acao-fantasma {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border-forte);
+}
+
+.acao-fantasma:hover {
+  background: var(--surface-alt);
+}
+
+/* Guarda negada. O botão NUNCA some: sumir esconde a regra fiscal, e a regra
+   é o produto. Fica visível, inerte, e diz por quê logo abaixo. */
+.acao-bloqueada,
+.acao-bloqueada:hover {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px dashed var(--border-forte);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.acao-motivo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.5rem 0.65rem;
+  border-left: 3px solid var(--status-pendente);
+  background: var(--status-pendente-bg);
+  border-radius: 0 calc(var(--radius) / 2) calc(var(--radius) / 2) 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.acao-motivo-texto {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------- selo de fonte */
+
+.selo-fonte {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35em;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.selo-fonte-descricao {
+  font-style: normal;
+}
+
+.selo-fonte-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.selo-fonte-verificar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0 0.35em;
+  border: 1px solid var(--status-pendente);
+  border-radius: calc(var(--radius) / 3);
+  background: var(--status-pendente-bg);
+  color: var(--status-pendente);
+  font-weight: 700;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ================================================================ estados */
+
+.estado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: clamp(1.5rem, 5vw, 3rem) 1rem;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.estado-marca {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.estado-titulo {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.estado-descricao {
+  max-width: 46ch;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
+.estado-acao {
+  margin-top: 0.4rem;
+}
+
+.estado-erro {
+  border-color: color-mix(in srgb, var(--status-erro) 40%, var(--border));
+  background: var(--status-erro-bg);
+}
+
+.estado-erro .estado-marca,
+.estado-erro .estado-titulo {
+  color: var(--status-erro);
+}
+
+.estado-sem-permissao {
+  border-style: dashed;
+  border-color: var(--border-forte);
+  background: var(--surface-alt);
+}
+
+/* ------------------------------------------------- carregando (skeleton) */
+
+.carregando {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.carregando-linha {
+  height: var(--row-h);
+  border-radius: calc(var(--radius) / 2);
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    90deg,
+    var(--surface-alt) 0%,
+    color-mix(in srgb, var(--surface-alt) 55%, var(--surface)) 50%,
+    var(--surface-alt) 100%
+  );
+  background-size: 200% 100%;
+  animation: carregando-onda 1.4s ease-in-out infinite;
+}
+
+@keyframes carregando-onda {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ---- trilha compacta: usada na tabela densa de viagens ----
+   Mantém os três canais (cor, rótulo em texto, forma), só encurta o rótulo
+   de status. Grade 2x2 para caber na coluna sem empurrar a tabela. */
+.trilha-compacta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 6px;
+  align-items: center;
+}
+
+.chip-doc {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  font-size: 0.8em;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.chip-doc b {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.chip-doc i {
+  font-style: normal;
+  color: currentColor;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip-doc[data-ausente="sim"] {
+  opacity: 0.45;
+}
+
+.chip-doc .indicador-forma {
+  font-size: 0.85em;
+  flex: 0 0 auto;
+}
