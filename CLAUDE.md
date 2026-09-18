@@ -18,16 +18,16 @@ negotiable style preferences.
 
 ## Stack
 
-| Layer | Choice |
-|---|---|
-| Framework | Next.js App Router |
-| Hosting | Vercel |
-| Database | Turso Cloud (libSQL) via `@libsql/client` |
-| ORM | Drizzle |
-| Blobs | Vercel Blob |
-| Jobs | Vercel Cron plus a `jobs` table |
-| Emission | Licensed provider behind an adapter |
-| Monorepo | pnpm workspaces plus Turborepo |
+| Layer     | Choice                                    |
+| --------- | ----------------------------------------- |
+| Framework | Next.js App Router                        |
+| Hosting   | Vercel                                    |
+| Database  | Turso Cloud (libSQL) via `@libsql/client` |
+| ORM       | Drizzle                                   |
+| Blobs     | Vercel Blob                               |
+| Jobs      | Vercel Cron plus a `jobs` table           |
+| Emission  | Licensed provider behind an adapter       |
+| Monorepo  | pnpm workspaces plus Turborepo            |
 
 ### Turso naming, because this causes repeated mistakes
 
@@ -101,14 +101,21 @@ fiscal problem for the customer, not a duplicate row for us to clean up.
 
 ### 7. Never call SEFAZ or ANTT directly
 
-All emission goes through `packages/fiscal`, behind the provider interface. The
-provider is still undecided (ADR 0003). Build and test against `FakeProvider`.
+All emission goes through `packages/fiscal`, behind the provider interfaces
+(`FiscalProvider` and `CiotProvider`). No adapter for a real provider is written
+yet. Build and test against `FakeFiscalProvider` and `FakeCiotProvider`.
 
 ### 8. Never invent a fiscal rule
 
 Deadlines, fine values, CFOPs, validation rules: if you do not have a source, you do
 not have the rule. `docs/domain/glossary.md` is an **unverified draft**. An entry
 without a source link is a hint about what to look up, not a rule to code against.
+
+The verified material is `docs/domain/fluxos-documentais.md`,
+`docs/domain/verificacao-2026-09.md` and `docs/domain/obrigatoriedade-mdfe-por-uf.md`,
+where every claim carries a 🟢/🟡/🔴 confidence mark. In code, the `Fonte` type in
+`@ai4l/core` makes the same thing structural: `Risco` and `Guarda` require a source,
+so an invented warning cannot reach the user without showing up in review.
 
 Inventing a plausible number here is the most damaging thing an agent can do in this
 repository, because it will look right in review and produce a fine in production.
@@ -121,12 +128,19 @@ answer.
 
 Read the ADR before proposing anything that contradicts it.
 
-| ADR | Decision | Status |
-|---|---|---|
-| [0001](docs/adr/0001-monorepo.md) | One monorepo, pnpm plus Turborepo | Accepted |
-| [0002](docs/adr/0002-single-database-org-id.md) | Single database, `org_id` per row | Accepted |
-| [0003](docs/adr/0003-fiscal-emission-provider.md) | Fiscal emission provider | **Open** |
-| [0004](docs/adr/0004-driver-surface.md) | Driver surface: PWA over WhatsApp | Proposed |
+| ADR                                               | Decision                            | Status   |
+| ------------------------------------------------- | ----------------------------------- | -------- |
+| [0001](docs/adr/0001-monorepo.md)                 | One monorepo, pnpm plus Turborepo   | Accepted |
+| [0002](docs/adr/0002-single-database-org-id.md)   | Single database, `org_id` per row   | Accepted |
+| [0003](docs/adr/0003-fiscal-emission-provider.md) | Fiscal emission provider: Focus NFe | Proposed |
+| [0004](docs/adr/0004-driver-surface.md)           | Driver surface: PWA over WhatsApp   | Proposed |
+| [0006](docs/adr/0006-ciot-provider.md)            | CIOT and vale-pedagio: Extratta     | Proposed |
+
+ADR 0003 is no longer open: it was decided after reading the public API docs of two
+providers. It is Proposed rather than Accepted because no real emission has been
+made yet; it needs a spike with credentials. ADR 0006 exists because no fiscal API
+house issues a CIOT — that is a Bacen-licensed payment institution — so there are
+two provider interfaces, not one.
 
 If a task requires reversing an accepted ADR, stop and say so. Do not quietly
 re-derive the architecture in a different direction, which is the standard failure

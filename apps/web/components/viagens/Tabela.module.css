@@ -1,0 +1,314 @@
+/* A tabela nunca rola de lado. Abaixo de 760px ela some e a mesma lista
+   aparece como cartões. Em nenhum momento o corpo da página rola na
+   horizontal. */
+
+.quadro {
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+  /* SEM overflow:hidden aqui. Um ancestral com overflow diferente de visible
+     vira scrollport do `position: sticky` do thead, e o cabeçalho passa a
+     flutuar DENTRO do quadro, escondendo a primeira linha. O arredondamento
+     é resolvido nas células das pontas. */
+}
+
+.tabela tbody tr:last-child td:first-child {
+  border-bottom-left-radius: var(--raio-2);
+}
+
+.tabela tbody tr:last-child td:last-child {
+  border-bottom-right-radius: var(--raio-2);
+}
+
+.tabela {
+  width: 100%;
+  table-layout: fixed;
+  font-size: 14px;
+}
+
+.tabela th,
+.tabela td {
+  /* Densidade vem do tema: Pátio é folgado, Torre é denso. */
+  padding: var(--cell-pad);
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--c-borda);
+  /* Conteúdo largo demais TRUNCA dentro da própria célula. Sem isto, um nome
+     de tomador comprido ou um badge de status largo vaza por cima da coluna
+     vizinha, e a tabela passa a mentir sobre a qual linha o dado pertence. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tabela td > * {
+  max-width: 100%;
+}
+
+/* O badge de status e a rota encolhem em vez de empurrar. */
+.tabela td :global(.indicador) {
+  max-width: 100%;
+}
+
+/* O rótulo do status pode quebrar em duas linhas dentro da célula. Truncar
+   "Documentos pendentes" em "Documentos pe" seria pior: o usuário leria um
+   estado que não existe. */
+.tabela td :global(.indicador-rotulo) {
+  white-space: normal;
+}
+
+/* <Rota> é inline-flex, e text-overflow não age sobre caixa flex. Dentro da
+   tabela ela vira texto corrido, e aí o "..." aparece de verdade em vez de a
+   cidade ser cortada no meio da palavra sem aviso. */
+.tabela td :global(.rota) {
+  display: inline;
+}
+
+/* display:inline mata o `gap` do flex, então o espaço entre cidade e UF volta
+   como margem. Sem isto sai "GoiâniaGO→AnápolisGO". */
+.tabela td :global(.rota) > * + * {
+  margin-left: 0.22em;
+}
+
+.tabela thead th {
+  position: sticky;
+  top: var(--altura-topo);
+  z-index: 5;
+  padding: 0;
+  background: var(--c-superficie-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-texto-fraco);
+  white-space: nowrap;
+}
+
+.tabela tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabela tbody tr {
+  height: var(--row-h);
+}
+
+.tabela tbody tr:hover {
+  background: var(--c-superficie-2);
+}
+
+.cabecalhoTexto {
+  display: block;
+  padding: var(--cell-pad);
+}
+
+.cabecalhoLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--alvo);
+  padding: 0 var(--cell-pad);
+  color: inherit;
+}
+
+.cabecalhoLink:hover {
+  color: var(--c-texto);
+  background: var(--c-superficie);
+}
+
+.cabecalhoLink[data-ordenado="asc"],
+.cabecalhoLink[data-ordenado="desc"] {
+  color: var(--c-texto);
+  font-weight: 700;
+}
+
+.cabecalhoDireita {
+  justify-content: flex-end;
+}
+
+.setaOrdem {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.setaInativa {
+  opacity: 0.35;
+}
+
+/* Larguras: o que é fixo é fixo, o que é texto longo encolhe. */
+.colStatus {
+  width: 13%;
+}
+.colNumero {
+  width: 7%;
+}
+.colRota {
+  width: 15%;
+}
+.colTomador {
+  width: 11%;
+}
+.colVeiculo {
+  width: 8%;
+}
+.colDocumentos {
+  width: 20%;
+}
+.colValor {
+  width: 11%;
+}
+.colRisco {
+  width: 5%;
+}
+.colAtualizada {
+  width: 10%;
+}
+
+.numeroLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--c-texto);
+  text-decoration: underline;
+  text-decoration-color: var(--c-borda-forte);
+  text-underline-offset: 3px;
+}
+
+.numeroLink:hover {
+  text-decoration-color: var(--c-acento);
+}
+
+.corta {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.valor {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  /* Dinheiro NUNCA trunca. "R$ 2.680..." é um número diferente de
+     "R$ 2.680,00", e num produto fiscal isso não é questão de layout. */
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.celulaRisco {
+  text-align: center;
+}
+
+.marcaRisco {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.tempo {
+  font-variant-numeric: tabular-nums;
+  color: var(--c-texto-suave);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------ cartões --- */
+
+.cartoes {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+}
+
+.cartaoTopo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cartaoNumero {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.cartaoRisco {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cartaoRota {
+  font-size: 14px;
+}
+
+/* <Rota> vem com white-space: nowrap para não quebrar dentro de uma célula.
+   No cartão, a 360px, isso estouraria a caixa — então aqui ela pode quebrar. */
+.cartaoRota :global(.rota) {
+  white-space: normal;
+  flex-wrap: wrap;
+}
+
+.cartaoLinhas {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 10px;
+  font-size: 13px;
+}
+
+.cartaoRotulo {
+  color: var(--c-texto-fraco);
+}
+
+.cartaoValor {
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+.cartaoRodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid var(--c-borda);
+}
+
+.cartaoAbrir {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo);
+  padding: 0 14px;
+  border: 1px solid var(--c-borda-forte);
+  border-radius: var(--raio-1);
+  color: var(--c-texto);
+  font-size: 14px;
+}
+
+@media (max-width: 760px) {
+  .quadro {
+    border: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+
+  .tabela {
+    display: none;
+  }
+
+  .cartoes {
+    display: flex;
+  }
+}

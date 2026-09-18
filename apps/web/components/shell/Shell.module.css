@@ -1,0 +1,53 @@
+.shell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "lateral topo"
+    "lateral principal";
+  min-height: 100dvh;
+  background: var(--c-fundo);
+}
+
+.principal {
+  grid-area: principal;
+  min-width: 0;
+  padding: 20px var(--gutter) 64px;
+}
+
+.interno {
+  width: 100%;
+  max-width: var(--largura-conteudo);
+  margin: 0 auto;
+  min-width: 0;
+}
+
+.atalho {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 10px 14px;
+  background: var(--c-superficie);
+  color: var(--c-texto);
+  border: 1px solid var(--c-borda-forte);
+  border-radius: var(--raio-1);
+}
+
+.atalho:focus {
+  left: 8px;
+  top: 8px;
+}
+
+@media (max-width: 760px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "topo"
+      "lateral"
+      "principal";
+  }
+
+  .principal {
+    padding: 16px var(--gutter) 56px;
+  }
+}

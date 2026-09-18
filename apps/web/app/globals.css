@@ -1,0 +1,74 @@
+/* ==========================================================================
+   globals.css — ponte de tokens, geometria do shell e regras de página.
+
+   REGRA DO PROJETO: nenhuma cor literal fora de tokens.css.
+   Este arquivo não tem nenhum valor de cor. O bloco "ponte" abaixo só dá
+   nomes locais aos tokens de @ai4l/ui/tokens.css; quando uma cor não existe
+   como token pronto, ela é derivada de outro token com color-mix — nunca
+   escrita à mão.
+
+   Reset, tipografia base, `.num`, `.visualmente-oculto` e `:focus-visible`
+   já vêm de tokens.css. Aqui só entra o que é do app.
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------- ponte de cor */
+  --c-fundo: var(--bg);
+  --c-superficie: var(--surface);
+  --c-superficie-2: var(--surface-alt);
+  --c-borda: var(--border);
+  --c-borda-forte: var(--border-forte);
+  --c-texto: var(--text);
+  --c-texto-suave: var(--text-muted);
+  --c-texto-fraco: var(--text-muted);
+  --c-acento: var(--accent);
+  --c-acento-contraste: var(--accent-contraste);
+  --c-acento-fraco: color-mix(in srgb, var(--accent) 12%, transparent);
+  --c-foco: var(--accent);
+
+  --c-bloqueante: var(--sev-bloqueante);
+  --c-critico: var(--sev-critico);
+  --c-alto: var(--sev-alto);
+  --c-medio: var(--sev-medio);
+
+  /* ------------------------------------------------ tipografia e geometria */
+  /* Raio e densidade acompanham o tema: Pátio é folgado, Torre é denso. */
+  --fonte: var(--font-family);
+  --fonte-mono: var(--font-mono);
+  --raio-1: calc(var(--radius) / 2);
+  --raio-2: var(--radius);
+  --raio-3: calc(var(--radius) * 1.25);
+
+  --gutter: 16px;
+  --alvo: 44px;
+  --largura-lateral: 248px;
+  --largura-lateral-recolhida: 68px;
+  --largura-conteudo: 1320px;
+  --altura-topo: 60px;
+}
+
+/* O body nunca rola na horizontal. Vale até 360px de largura. */
+html {
+  overflow-x: hidden;
+}
+
+html,
+body {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Datas, valores e chaves com dígito de largura fixa: coluna que não dança
+   quando o número muda. */
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}

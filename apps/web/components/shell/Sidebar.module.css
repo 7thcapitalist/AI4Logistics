@@ -1,0 +1,301 @@
+/* Barra lateral: marca, navegação e o bloco permanente de saúde da operação.
+   Um arquivo só, importado por Sidebar.tsx, Nav.tsx e SaudeOperacao.tsx, para
+   que o estado recolhido do <aside> alcance os descendentes. */
+
+.lateral {
+  grid-area: lateral;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100dvh;
+  width: var(--largura-lateral);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 10px;
+  border-right: 1px solid var(--c-borda);
+  background: var(--c-superficie);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.lateral[data-recolhida="true"] {
+  width: var(--largura-lateral-recolhida);
+}
+
+.topoLateral {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: var(--alvo);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--c-texto);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.marcaSigla {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: var(--raio-1);
+  background: var(--c-acento);
+  color: var(--c-acento-contraste);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.botaoLateral {
+  display: grid;
+  place-items: center;
+  width: var(--alvo);
+  height: var(--alvo);
+  flex: 0 0 var(--alvo);
+  border: 1px solid transparent;
+  border-radius: var(--raio-1);
+  background: transparent;
+  color: var(--c-texto-suave);
+  cursor: pointer;
+}
+
+.botaoLateral:hover {
+  background: var(--c-superficie-2);
+  color: var(--c-texto);
+}
+
+.botaoRecolher {
+  display: grid;
+}
+
+.botaoMenu {
+  display: none;
+}
+
+.girado {
+  transform: rotate(180deg);
+}
+
+/* ------------------------------------------------------------------- nav */
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--alvo);
+  padding: 0 10px;
+  border-radius: var(--raio-1);
+  color: var(--c-texto-suave);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.item:hover {
+  background: var(--c-superficie-2);
+  color: var(--c-texto);
+}
+
+.item[aria-current="page"] {
+  background: var(--c-acento-fraco);
+  color: var(--c-texto);
+  font-weight: 600;
+}
+
+.itemIcone {
+  flex: 0 0 20px;
+  display: grid;
+  place-items: center;
+}
+
+.itemRotulo {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lateral[data-recolhida="true"] .itemRotulo,
+.lateral[data-recolhida="true"] .marca span,
+.lateral[data-recolhida="true"] .saudeTitulo,
+.lateral[data-recolhida="true"] .saudeDescricao,
+.lateral[data-recolhida="true"] .nivelRotulo {
+  display: none;
+}
+
+.lateral[data-recolhida="true"] .item,
+.lateral[data-recolhida="true"] .nivel {
+  justify-content: center;
+  padding: 0;
+}
+
+/* ------------------------------------------------- saúde da operação ---- */
+
+.saude {
+  margin-top: auto;
+  padding: 10px 0 2px;
+  border-top: 1px solid var(--c-borda);
+}
+
+.saudeTitulo {
+  padding: 4px 10px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-texto-fraco);
+}
+
+.saudeDescricao {
+  padding: 2px 10px 8px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--c-texto-fraco);
+}
+
+.niveis {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nivel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--alvo);
+  padding: 0 10px;
+  border-radius: var(--raio-1);
+  color: var(--c-texto-suave);
+}
+
+.nivel:hover {
+  background: var(--c-superficie-2);
+  color: var(--c-texto);
+}
+
+.nivelMarca {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+.nivelRotulo {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.nivelContagem {
+  flex: 0 0 auto;
+  min-width: 26px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  color: var(--c-texto);
+}
+
+.nivelZero .nivelContagem {
+  color: var(--c-texto-fraco);
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------- mobile */
+
+@media (max-width: 760px) {
+  .lateral,
+  .lateral[data-recolhida="true"] {
+    position: static;
+    height: auto;
+    width: 100%;
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid var(--c-borda);
+    padding: 8px var(--gutter) 10px;
+  }
+
+  .marca {
+    display: none;
+  }
+
+  .botaoRecolher {
+    display: none;
+  }
+
+  .botaoMenu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    padding: 0 12px;
+    color: var(--c-texto-suave);
+    font-size: 14px;
+  }
+
+  .topoLateral {
+    justify-content: flex-start;
+    min-height: 0;
+  }
+
+  /* A navegação recolhe no celular. O bloco de saúde nunca. */
+  .nav {
+    display: none;
+  }
+
+  .lateral[data-menu="true"] .nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .lateral[data-recolhida="true"] .itemRotulo,
+  .lateral[data-recolhida="true"] .saudeTitulo,
+  .lateral[data-recolhida="true"] .saudeDescricao,
+  .lateral[data-recolhida="true"] .nivelRotulo {
+    display: revert;
+  }
+
+  .lateral[data-recolhida="true"] .item,
+  .lateral[data-recolhida="true"] .nivel {
+    justify-content: flex-start;
+    padding: 0 10px;
+  }
+
+  .saude {
+    margin-top: 6px;
+    padding-top: 8px;
+  }
+
+  .saudeDescricao {
+    display: none;
+  }
+
+  .niveis {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .nivel {
+    min-height: var(--alvo);
+    border: 1px solid var(--c-borda);
+  }
+}

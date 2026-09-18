@@ -1,0 +1,54 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px var(--gutter) 64px;
+  max-width: var(--largura-conteudo);
+  margin: 0 auto;
+}
+
+.bloco {
+  border-radius: var(--raio-1);
+  background: var(--c-superficie-2);
+  animation: pulsar 1.4s ease-in-out infinite;
+}
+
+.titulo {
+  height: 26px;
+  width: 180px;
+}
+
+.barra {
+  height: 48px;
+  width: 100%;
+}
+
+.quadro {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--c-borda);
+  border-radius: var(--raio-2);
+  background: var(--c-superficie);
+}
+
+.linha {
+  height: 40px;
+  width: 100%;
+}
+
+.aviso {
+  font-size: 13px;
+  color: var(--c-texto-fraco);
+}
+
+@keyframes pulsar {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
