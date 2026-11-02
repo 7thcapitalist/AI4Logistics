@@ -1,45 +1,61 @@
 # AI4Logistics
 
-Compliance and operations platform for small Brazilian transportadoras (5-50 trucks).
+Compliance and operations software for small Brazilian trucking companies (transportadoras with 5 to 50 trucks).
 
-One flow issues CT-e, MDF-e, CIOT and vale-pedagio for a trip, alerts before an MDF-e
-goes overdue, and settles the driver automatically. The alert is the product: a missed
-MDF-e closure is an ANTT fine, and that is what the subscription prevents.
+## Why
 
-## Start here
+In Brazil, a trip needs several fiscal documents (CT-e, MDF-e, CIOT, vale-pedagio), and an MDF-e left open past its deadline is an ANTT fine. Small carriers handle this with spreadsheets and WhatsApp. The product is one flow that issues the documents for a trip, an alert before an MDF-e goes overdue (the alert is what the subscription pays for), and automatic settlement of what the driver is owed.
 
-| File | What it is |
-|---|---|
-| `SETUP.md` | Day 1 to day 6, in order. Do this first. |
-| `CLAUDE.md` | Stack, layout and invariants. Humans and agents read this every task. |
-| `CONTRIBUTING.md` | Branching, PRs, migrations. Read once, together. |
-| `docs/adr/` | Why the expensive decisions were made the way they were. |
-| `docs/domain/glossary.md` | Fiscal vocabulary. **Unverified draft, do not code against it.** |
+## Status
 
-## Layout
+Early prototype. Nothing here is connected to a real fiscal provider or to real customers.
+
+- Done: the pure domain layer (types, deadlines, guards, a nine-state trip state machine, a risk engine, settlement maths) with its tests; a fake fiscal and CIOT provider that reproduces real rejection cases; a CSS-token design system with two themes; the owner dashboard screens `/viagens` (trips) and `/viagens/[id]`, plus stub routes for the rest; the database schema, tenant-scoped client, migrations, seed and an isolation test.
+- The web app currently runs on deterministic in-memory fixtures with a fixed clock. All company names, CNPJs and documents in them are made up.
+- Not done: real CT-e / MDF-e / CIOT emission (the provider choice is still a proposed ADR pending a spike with credentials), the driver PWA, WhatsApp notifications, the closure-alert cron beyond its route skeleton, auth.
+- The fiscal glossary in `docs/domain/` is an unverified draft, and some numbers (for example the 24-hour MDF-e alert threshold) are marked in the docs as guesses to be sourced.
+
+## How it works
+
+- One shared database with `org_id` on every tenant-scoped row. SQLite has no row-level security, so all queries go through a tenant-scoped client in `packages/db`, and the seed creates two carriers on purpose so a tenant leak shows up on the first page load.
+- Business rules are pure functions in `packages/core` with no I/O, so money and state-machine logic never lives in a React component.
+- `packages/fiscal` defines provider-agnostic `FiscalProvider` and `CiotProvider` interfaces; only a fake implementation exists.
+- Decisions are recorded as numbered ADRs in `docs/adr/`.
 
 ```
-apps/web/                Next.js: owner dashboard + driver PWA + API + cron
+apps/web/                Next.js: owner dashboard, API, cron routes
 packages/db/             Drizzle schema, migrations, tenant-scoped client
-packages/core/           Pure domain logic: settlement maths, trip state machine
-packages/fiscal/         Provider-agnostic CT-e / MDF-e / CIOT interface
-packages/notifications/  WhatsApp, push
-packages/ui/             Shared components
-docs/adr/                Decisions, numbered, append-only
-docs/domain/             Fiscal glossary
-.claude/                 Shared agent definitions and slash commands
+packages/core/           Domain logic: settlement, trip state machine, risks
+packages/fiscal/         CT-e / MDF-e / CIOT provider interfaces + fake
+packages/notifications/  WhatsApp, push (placeholder)
+packages/ui/             Design tokens and shared components
 ```
 
-## Quickstart
+## Stack
+
+Next.js (App Router), TypeScript, Turso Cloud (libSQL) with Drizzle, Vercel (hosting, Blob, Cron), pnpm workspaces and Turborepo, Vitest, GitHub Actions with gitleaks.
+
+## Run it
 
 ```bash
 pnpm install
-pnpm hooks:install             # blocks direct pushes to main; GitHub Free cannot
-cp .env.example .env.local     # fill in Turso credentials
+pnpm hooks:install             # local pre-push hook that blocks direct pushes to main
+cp .env.example .env.local     # add Turso dev credentials (only needed for the DB scripts)
 pnpm db:migrate
-pnpm db:seed                   # seeds TWO organisations, on purpose
-pnpm dev
+pnpm db:seed
+pnpm dev                       # http://localhost:3000/viagens
+pnpm test && pnpm typecheck
 ```
 
-The seed creates two carriers because a tenant leak should be visible on the first
-page load, not in production.
+Credentials are never committed; `.env.example` lists the variables. See `SETUP.md` for the full setup and `CONTRIBUTING.md` for branching and migration rules.
+
+## What's next
+
+1. Spike the fiscal and CIOT providers with real sandbox credentials, then accept or replace ADR 0003 and 0006.
+2. Source and verify the fiscal glossary and the MDF-e deadline rules with primary references.
+3. Replace fixtures with the database, add auth, and wire the MDF-e closure alert end to end.
+4. Driver PWA and WhatsApp notifications, then a pilot with a small group of carriers.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
